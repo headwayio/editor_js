@@ -10,8 +10,12 @@ module EditorJs
           properties:
             caption:
               type: string
-            url:
-              type: string
+            file:
+              type: object
+              additionalProperties: false
+              properties:
+                url:
+                  type: string
             stretched:
               type: boolean
             withBackground:
