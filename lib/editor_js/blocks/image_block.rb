@@ -6,21 +6,19 @@ module EditorJs
       def schema
         YAML.safe_load(<<~YAML)
           type: object
-          additionalProperties: false
           properties:
-            caption:
-              type: string
             file:
               type: object
-              additionalProperties: false
               properties:
                 url:
                   type: string
+            caption:
+              type: string
+            withBorder:
+              type: boolean
             stretched:
               type: boolean
             withBackground:
-              type: boolean
-            withBorder:
               type: boolean
         YAML
       end
