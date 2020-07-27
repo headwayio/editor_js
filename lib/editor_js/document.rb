@@ -36,7 +36,7 @@ module EditorJs
       blocks = @content['blocks'].map do |blk_data|
         EditorJs::Blocks::Base.load(blk_data)
       end
-      @valid = blocks.all? { |b| b["type"] == "image" ? true : b.valid? }
+      @valid = blocks.all? { |b| b.type == "image" ? true : b.valid? }
       @blocks = blocks if @valid
       @valid
     end
