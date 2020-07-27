@@ -22,8 +22,6 @@ module EditorJs
               type: boolean
             withBorder:
               type: boolean
-          required:
-          - url
         YAML
       end
 
