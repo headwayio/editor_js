@@ -15,17 +15,28 @@ module EditorJs
 
       def valid_url?(candidate)
         target = URI.parse(candidate)
-        uri.is_a?(URI::HTTP) && !uri.host.nil?
+        target.is_a?(URI::HTTP) && !target.host.nil?
+
         rescue URI::InvalidURIError
         false
+      end
+
+      def a_tag(url)
+        tag.a(url,  href: url, target: '_blank', class: css_name)
+      end
+
+      def warning
+        tag.div(
+          tag.i("(invalid url)", class: 'editorjs--url-invalid'),
+          class: css_name
+        )
       end
 
       def render(_options = {})
         url = data['url']
 
-        # @TODO: check for valid url and render helpful message
         # @TODO: only apply target="_blank" to external links
-        tag.a(url,  href: url, target: '_blank', class: css_name)
+        valid_url?(url) ? a_tag(url) : warning
       end
 
       def sanitize!
