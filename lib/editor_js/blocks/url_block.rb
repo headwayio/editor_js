@@ -3,6 +3,13 @@
 module EditorJs
   module Blocks
     class UrlBlock < Base
+
+      # @TODO: supplement this whitelist from an ENV provided by the app,
+      # since it could be accessed from additional public URLs.
+      InternalHostWhitelist = [
+        'localhost', 'saleskit-staging.herokuapp.com'
+      ]
+
       def schema
         YAML.safe_load(<<~YAML)
           type: object
@@ -13,16 +20,38 @@ module EditorJs
         YAML
       end
 
-      def valid_url?(candidate)
+      def validated_url(candidate)
         target = URI.parse(candidate)
-        target.is_a?(URI::HTTP) && !target.host.nil?
+        is_web_or_relative = (
+          target.is_a?(URI::HTTP) ||
+          target.is_a?(URI::HTTPS)||
+          target.is_a?(URI::Generic)
+        )
+        return nil unless is_web_or_relative
 
-        rescue URI::InvalidURIError
-        false
+        target
+      rescue URI::InvalidURIError
+        nil
+      end
+
+      # External URLs need target_blank, so that when opened, they trigger a
+      # new-window event, which we can listen for in Electron, to open that
+      # link in the OS browser instead of the Electron app
+      def target(url)
+        # An internal URL could have a path, but no host, like /plays/2.
+        # It could also have the absolute URL with a scheme and  host, in which
+        # case, we can make the decision using the public URL whitelist
+        is_internal = url.scheme.nil? || InternalHostWhitelist.any? do |host|
+          url.host.downcase == host
+        end
+
+        return nil if is_internal
+
+        "_blank"
       end
 
       def a_tag(url)
-        tag.a(url,  href: url, target: '_blank', class: css_name)
+        tag.a(url.to_s,  href: url.to_s, target: target(url), class: css_name)
       end
 
       def warning
@@ -33,10 +62,10 @@ module EditorJs
       end
 
       def render(_options = {})
-        url = data['url']
+        url = validated_url(data['url'])
+        return warning unless url
 
-        # @TODO: only apply target="_blank" to external links
-        valid_url?(url) ? a_tag(url) : warning
+        a_tag(url)
       end
 
       def sanitize!
