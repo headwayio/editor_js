@@ -52,7 +52,7 @@ module EditorJs
 
       def a_block(url)
         tag.div(
-          tag.a(url.to_s,  href: url.to_s, target: target(url), class: css_name + "-anchor"),
+          tag.a(url.to_s,  href: url.to_s, target: target(url), class: "editorjs--url-link"),
           class: css_name
         )
       end
