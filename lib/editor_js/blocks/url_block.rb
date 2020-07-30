@@ -50,11 +50,14 @@ module EditorJs
         "_blank"
       end
 
-      def a_tag(url)
-        tag.a(url.to_s,  href: url.to_s, target: target(url), class: css_name)
+      def a_block(url)
+        tag.div(
+          tag.a(url.to_s,  href: url.to_s, target: target(url), class: css_name),
+          class: css_name
+        )
       end
 
-      def warning
+      def warning_block
         tag.div(
           tag.i("(invalid url)", class: 'editorjs--url-invalid'),
           class: css_name
@@ -63,9 +66,9 @@ module EditorJs
 
       def render(_options = {})
         url = validated_url(data['url'])
-        return warning unless url
+        return warning_block unless url
 
-        a_tag(url)
+        a_block(url)
       end
 
       def sanitize!
