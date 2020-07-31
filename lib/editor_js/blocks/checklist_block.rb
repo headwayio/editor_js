@@ -26,7 +26,7 @@ module EditorJs
       def render(_options = {})
         content_tag :div, class: css_name do
           data['items'].map do |item|
-            content_tag(:div, class: css_name('__warrper')) do
+            content_tag(:div, class: css_name('__wrapper')) do
               html_str = content_tag(:input, nil, type: 'checkbox', disabled: true, checked: item['checked'])
               html_str += content_tag(:label, item['text'].html_safe)
               html_str.html_safe
