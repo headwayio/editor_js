@@ -52,7 +52,7 @@ module EditorJs
 
       @renderred_plain = valid? && @blocks.map(&:plain).select do |text|
         text if text.present?
-      end.join('. ') || ''
+      end.join("\n\n") || ''
     end
 
     def output
