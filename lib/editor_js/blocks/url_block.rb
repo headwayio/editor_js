@@ -64,8 +64,26 @@ module EditorJs
         )
       end
 
+      def add_protocol(href)
+        return href if href.match?(/^(\w+):(\/\/)?/)
+
+        is_internal = href.match?(/^\/[^\/\s]/)
+        is_anchor = href[0].eql?('#')
+        is_protocol_relative = href.match?(/^\/\/[^\/\s]/)
+        will_add_protocol = !is_internal && !is_anchor && !is_protocol_relative
+
+        if will_add_protocol
+          #require('pry'); binding.pry
+        end
+
+        href = "http://#{href}" if will_add_protocol
+
+        return href
+      end
+
       def render(_options = {})
-        url = validated_url(data['url'])
+        link_text = add_protocol(data['url'])
+        url = validated_url(link_text)
         return warning_block unless url
 
         a_block(url)
